@@ -1,4 +1,3 @@
-import 'package:authentication_repository/src/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelapp/app/app.dart';
@@ -17,48 +16,49 @@ class HomePage extends StatelessWidget {
     final isLargeScreen = MediaQuery.of(context).size.width > 600;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child:Text('Home', style: TextStyle(color: Colors.white))),
-      ),
-      drawer: isLargeScreen ? null : MobileMenu(context),
-      body: Align(
+        appBar: AppBar(
+          title: const Center(
+              child: Text('Home', style: TextStyle(color: Colors.white))),
+        ),
+        drawer: isLargeScreen ? null : MobileMenu(context),
+        body: Align(
           alignment: const Alignment(0, -1 / 3),
           child: isLargeScreen
-            ? 
-            //this is the desktop view
-            Row(
-      children: <Widget>[
-        MobileMenu(context),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Avatar(photo: user.photo),
-              const SizedBox(height: 4),
-              Text(user.email ?? '', style: textTheme.titleLarge),
-              const SizedBox(height: 4),
-              Text(user.name ?? '', style: textTheme.headlineSmall),
-            ],
-          ),
-        ),
-        
-      ],
-    )
-            ://this is the mobile view
-            Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Avatar(photo: user.photo),
-        const SizedBox(height: 4),
-        Text(user.email ?? '', style: textTheme.titleLarge),
-        const SizedBox(height: 4),
-        Text(user.name ?? '', style: textTheme.headlineSmall),
-      ],
-    ),
-    ));
+              ?
+              //this is the desktop view
+              Row(
+                  children: <Widget>[
+                    MobileMenu(context),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Avatar(photo: user.photo),
+                          const SizedBox(height: 4),
+                          Text(user.email ?? '', style: textTheme.titleLarge),
+                          const SizedBox(height: 4),
+                          Text(user.name ?? '', style: textTheme.headlineSmall),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : //this is the mobile view
+              Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Avatar(photo: user.photo),
+                    const SizedBox(height: 4),
+                    Text(user.email ?? '', style: textTheme.titleLarge),
+                    const SizedBox(height: 4),
+                    Text(user.name ?? '', style: textTheme.headlineSmall),
+                  ],
+                ),
+        ));
   }
 
   Widget MobileMenu(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -73,6 +73,17 @@ class HomePage extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 24,
               ),
+            ),
+          ),
+          Container(
+            child: Column(
+              children: <Widget>[
+                Avatar(photo: user.photo),
+                const SizedBox(height: 4),
+                Text(user.email ?? ''),
+                const SizedBox(height: 4),
+                Text(user.name ?? ''),
+              ],
             ),
           ),
           ListTile(
@@ -95,4 +106,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
