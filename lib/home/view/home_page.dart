@@ -30,31 +30,28 @@ class HomePage extends StatelessWidget {
                   children: <Widget>[
                     MobileMenu(context),
                     Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Avatar(photo: user.photo),
-                          const SizedBox(height: 4),
-                          Text(user.email ?? '', style: textTheme.titleLarge),
-                          const SizedBox(height: 4),
-                          Text(user.name ?? '', style: textTheme.headlineSmall),
-                        ],
-                      ),
+                      child: mainscreen(context),
                     ),
                   ],
                 )
               : //this is the mobile view
-              Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Avatar(photo: user.photo),
-                    const SizedBox(height: 4),
-                    Text(user.email ?? '', style: textTheme.titleLarge),
-                    const SizedBox(height: 4),
-                    Text(user.name ?? '', style: textTheme.headlineSmall),
-                  ],
-                ),
+              mainscreen(context),
         ));
+  }
+
+  Widget mainscreen(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Avatar(photo: user.photo),
+        const SizedBox(height: 4),
+        Text(user.email ?? '', style: textTheme.titleLarge),
+        const SizedBox(height: 4),
+        Text(user.name ?? '', style: textTheme.headlineSmall),
+      ],
+    );
   }
 
   Widget MobileMenu(BuildContext context) {
