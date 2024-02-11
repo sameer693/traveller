@@ -11,40 +11,50 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final user = context.select((AppBloc bloc) => bloc.state.user);
+    
     final isLargeScreen = MediaQuery.of(context).size.width > 600;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(
-              child: Text('Home', style: TextStyle(color: Colors.white))),
-        ),
-        // add a navigation drawer to the app bar shows todos and stats
-        bottomNavigationBar: BottomNavigationBar(items: [
+      appBar: AppBar(
+        title: const Center(
+            child: Text('Home', style: TextStyle(color: Colors.white))),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.list), label: 'Todos'),
+            icon: Icon(Icons.list),
+            label: 'Todos',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.show_chart), label: 'Stats'),
-        ])
-        ,
-        drawer: isLargeScreen ? null : MobileMenu(context),
-        body: Align(
-          alignment: const Alignment(0, -1 / 3),
-          child: isLargeScreen
-              ?
-              //this is the desktop view
-              Row(
-                  children: <Widget>[
-                    MobileMenu(context),
-                    Expanded(
-                      child: mainscreen(context),
-                    ),
-                  ],
-                )
-              : //this is the mobile view
-              mainscreen(context),
-        ));
+            icon: Icon(Icons.show_chart),
+            label: 'Stats',
+          ),
+        ],
+        onTap: (index) {
+          if (index == 0) {
+            // Navigate to the todos page
+            Navigator.pushNamed(context, '/todos');
+          } else if (index == 1) {
+            // Navigate to the stats page
+            Navigator.pushNamed(context, '/stats');
+          }
+        },
+      ),
+      drawer: isLargeScreen ? null : MobileMenu(context),
+      body: Align(
+        alignment: const Alignment(0, -1 / 3),
+        child: isLargeScreen
+            ? Row(
+                children: <Widget>[
+                  MobileMenu(context),
+                  Expanded(
+                    child: mainscreen(context),
+                  ),
+                ],
+              )
+            : mainscreen(context),
+      ),
+    );
   }
 
   Widget mainscreen(BuildContext context) {
@@ -58,7 +68,7 @@ class HomePage extends StatelessWidget {
         Text(user.email ?? '', style: textTheme.titleLarge),
         const SizedBox(height: 4),
         Text(user.name ?? '', style: textTheme.headlineSmall),
-        iconsTray(context)
+        iconsTray(context),
       ],
     );
   }
@@ -129,7 +139,7 @@ class HomePage extends StatelessWidget {
             leading: const Icon(Icons.lightbulb),
             title: const Text('Toggle Dark Mode / Light Mode'),
             onTap: () {
-              //call the theme bloc to toggle the theme
+              // Call the theme bloc to toggle the theme
               context.read<ThemeBloc>().add(ThemeSwitchEvent());
             },
           ),
