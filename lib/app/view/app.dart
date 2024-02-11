@@ -2,21 +2,32 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local_storage_todos_api/src/local_storage_todos_api.dart';
+import 'package:todos_repository/todos_repository.dart';
 import 'package:travelapp/app/app.dart';
+import 'package:travelapp/l10n/l10n.dart';
 import 'package:travelapp/themes/bloc/theme_bloc.dart';
 
 class App extends StatelessWidget {
   const App({
     required AuthenticationRepository authenticationRepository,
     super.key,
-  }) : _authenticationRepository = authenticationRepository;
+    required LocalStorageTodosApi todosApi,
+  }) : _authenticationRepository = authenticationRepository,
+        _todosApi = todosApi;
 
+
+  final LocalStorageTodosApi _todosApi;
   final AuthenticationRepository _authenticationRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: _authenticationRepository,
+    final todosRepository = TodosRepository(todosApi: _todosApi);
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: _authenticationRepository),
+        RepositoryProvider.value(value: todosRepository),
+      ],
       child: BlocProvider(
         create: (_) => AppBloc(
           authenticationRepository: _authenticationRepository,
@@ -25,7 +36,6 @@ class App extends StatelessWidget {
       ),
     );
   }
-  
 }
 
 class AppView extends StatelessWidget {
@@ -46,14 +56,13 @@ class AppView extends StatelessWidget {
                   state: context.select((AppBloc bloc) => bloc.state.status),
                   onGeneratePages: onGenerateAppViewPages,
                 ),
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
               );
             },
           );
         },
       ),
-    );  
-
-    
+    );
   }
 }
-

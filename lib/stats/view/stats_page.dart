@@ -6,7 +6,12 @@ import 'package:travelapp/stats/bloc/stats_bloc.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
-
+  //route to the stats page
+  static Route<void> route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => const StatsPage(),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

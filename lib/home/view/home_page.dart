@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelapp/app/app.dart';
+import 'package:travelapp/edit_todo/view/edit_todo_page.dart';
 import 'package:travelapp/home/widgets/avatar.dart';
+import 'package:travelapp/stats/view/stats_page.dart';
 import 'package:travelapp/themes/bloc/theme_bloc.dart';
+import 'package:travelapp/home/cubit/home_cubit.dart';
+import 'package:travelapp/todos_overview/view/todos_overview_page.dart'; // Import the HomeCubit
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,13 +15,19 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final isLargeScreen = MediaQuery.of(context).size.width > 600;
 
     return Scaffold(
       appBar: AppBar(
         title: const Center(
             child: Text('Home', style: TextStyle(color: Colors.white))),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        key: const Key('homeView_addTodo_floatingActionButton'),
+        onPressed: () => Navigator.of(context).push(EditTodoPage.route()),
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -32,21 +42,22 @@ class HomePage extends StatelessWidget {
         ],
         onTap: (index) {
           if (index == 0) {
-            // Navigate to the todos page
-            Navigator.pushNamed(context, '/todos');
+            // Navigate to the todos page TodosOverviewPage
+          Navigator.of(context).push(TodosOverviewPage.route());
+           
           } else if (index == 1) {
             // Navigate to the stats page
-            Navigator.pushNamed(context, '/stats');
+           Navigator.of(context).push(StatsPage.route());
           }
         },
       ),
-      drawer: isLargeScreen ? null : MobileMenu(context),
+      drawer: isLargeScreen ? null : mobileMenu(context),
       body: Align(
         alignment: const Alignment(0, -1 / 3),
         child: isLargeScreen
             ? Row(
                 children: <Widget>[
-                  MobileMenu(context),
+                  mobileMenu(context),
                   Expanded(
                     child: mainscreen(context),
                   ),
@@ -60,6 +71,7 @@ class HomePage extends StatelessWidget {
   Widget mainscreen(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final user = context.select((AppBloc bloc) => bloc.state.user);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -81,6 +93,7 @@ class HomePage extends StatelessWidget {
           icon: Icon(Icons.playlist_add),
           onPressed: () {
             // TODO: Implement functionality to make a todo list for a trip
+            //go to the todos overview page
           },
         ),
         IconButton(
@@ -99,7 +112,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget MobileMenu(BuildContext context) {
+  Widget mobileMenu(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     return Drawer(
       child: ListView(

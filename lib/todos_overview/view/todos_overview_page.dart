@@ -11,7 +11,12 @@ import 'package:travelapp/todos_overview/widgets/todos_overview_options_button.d
 
 class TodosOverviewPage extends StatelessWidget {
   const TodosOverviewPage({super.key});
-
+  //route to the todos overview page
+  static Route<void> route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => const TodosOverviewPage(),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
