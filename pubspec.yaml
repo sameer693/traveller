@@ -50,6 +50,14 @@ dependencies:
   google_fonts: ^4.0.0
   meta: ^1.7.0
   shared_preferences: ^2.2.2
+  json_annotation: ^4.6.0
+  uuid: ^3.0.6
+  local_storage_todos_api:
+    path: packages/local_storage_todos_api
+  todos_api:
+    path: packages/todos_api
+  todos_repository:
+    path: packages/todos_repository
 
 dev_dependencies:
   bloc_test: ^9.0.0
