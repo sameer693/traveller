@@ -43,28 +43,34 @@ class HomePage extends StatelessWidget {
         onTap: (index) {
           if (index == 0) {
             // Navigate to the todos page TodosOverviewPage
-          Navigator.of(context).push(TodosOverviewPage.route());
-           
+            Navigator.of(context).push(TodosOverviewPage.route());
           } else if (index == 1) {
             // Navigate to the stats page
-           Navigator.of(context).push(StatsPage.route());
+            Navigator.of(context).push(StatsPage.route());
           }
         },
       ),
       drawer: isLargeScreen ? null : mobileMenu(context),
-      body: Align(
-        alignment: const Alignment(0, -1 / 3),
-        child: isLargeScreen
+      body: isLargeScreen
             ? Row(
                 children: <Widget>[
                   mobileMenu(context),
-                  Expanded(
-                    child: mainscreen(context),
-                  ),
-                ],
+                  // vetical flex and fit the child
+                    Expanded(
+                      child: Flex(
+                        direction: Axis.vertical,
+                        children: <Widget>[
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: mainscreen(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
               )
             : mainscreen(context),
-      ),
+      
     );
   }
 
@@ -72,9 +78,19 @@ class HomePage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Container(
+      decoration: BoxDecoration(
+    border: Border.all(color: Colors.blueAccent)
+  ),
+      child: Column(
+      mainAxisSize: MainAxisSize.min,     
+      
       children: <Widget>[
+        SearchBar(
+          
+          hintText: 'Search for a trip', onChanged: (value) {
+
+        }),
         Avatar(photo: user.photo),
         const SizedBox(height: 4),
         Text(user.email ?? '', style: textTheme.titleLarge),
@@ -82,7 +98,7 @@ class HomePage extends StatelessWidget {
         Text(user.name ?? '', style: textTheme.headlineSmall),
         iconsTray(context),
       ],
-    );
+    ));
   }
 
   Widget iconsTray(BuildContext context) {
