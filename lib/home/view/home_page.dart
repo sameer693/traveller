@@ -79,9 +79,7 @@ class HomePage extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return Container(
-      decoration: BoxDecoration(
-    border: Border.all(color: Colors.blueAccent)
-  ),
+        padding: const EdgeInsets.all(16),
       child: Column(
       mainAxisSize: MainAxisSize.min,     
       
