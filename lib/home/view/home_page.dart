@@ -20,6 +20,14 @@ class HomePage extends StatelessWidget {
           title: const Center(
               child: Text('Home', style: TextStyle(color: Colors.white))),
         ),
+        // add a navigation drawer to the app bar shows todos and stats
+        bottomNavigationBar: BottomNavigationBar(items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list), label: 'Todos'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.show_chart), label: 'Stats'),
+        ])
+        ,
         drawer: isLargeScreen ? null : MobileMenu(context),
         body: Align(
           alignment: const Alignment(0, -1 / 3),
@@ -50,6 +58,33 @@ class HomePage extends StatelessWidget {
         Text(user.email ?? '', style: textTheme.titleLarge),
         const SizedBox(height: 4),
         Text(user.name ?? '', style: textTheme.headlineSmall),
+        iconsTray(context)
+      ],
+    );
+  }
+
+  Widget iconsTray(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.playlist_add),
+          onPressed: () {
+            // TODO: Implement functionality to make a todo list for a trip
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.list),
+          onPressed: () {
+            // TODO: Implement functionality to view a trip list
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            // TODO: Implement functionality to search popular top list
+          },
+        ),
       ],
     );
   }
