@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelapp/app/app.dart';
 import 'package:travelapp/edit_todo/view/edit_todo_page.dart';
 import 'package:travelapp/home/widgets/avatar.dart';
+import 'package:travelapp/make_trip/make_trip.dart';
 import 'package:travelapp/stats/view/stats_page.dart';
 import 'package:travelapp/themes/bloc/theme_bloc.dart';
 import 'package:travelapp/todos_overview/view/todos_overview_page.dart'; // Import the HomeCubit
@@ -113,10 +114,11 @@ class HomePage extends StatelessWidget {
       children: <Widget>[
         IconButton(
           icon: Icon(Icons.playlist_add),
-          onPressed: () {
-            // TODO: Implement functionality to make a todo list for a trip
-            //go to the todos overview page
-          },
+          onPressed: () => Navigator.of(context).push(MakeTripPage.route()),
+          // onPressed: () {
+          //   // TODO: Implement functionality to make a todo list for a trip
+          //   //go to the todos overview page
+          // },
         ),
         IconButton(
           icon: Icon(Icons.list),
