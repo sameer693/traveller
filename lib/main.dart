@@ -7,16 +7,16 @@ import 'package:local_storage_todos_api/local_storage_todos_api.dart';
 import 'package:travelapp/app/bloc_observer.dart';
 import 'package:travelapp/app/view/app.dart';
 import 'package:travelapp/firebase_options.dart';
+import 'package:travelapp/firestore_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   //get defualt options for the firebase app
   await Firebase.initializeApp(options:  DefaultFirebaseOptions.currentPlatform );
-
-
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
+  
   
   final todosApi = LocalStorageTodosApi(
     plugin: await SharedPreferences.getInstance(),

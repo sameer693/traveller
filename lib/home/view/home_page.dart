@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   static Page<void> page() => const MaterialPage<void>(child: HomePage());
-
+  
   @override
   Widget build(BuildContext context) {
     final isLargeScreen = MediaQuery.of(context).size.width > 600;
@@ -82,11 +82,11 @@ class HomePage extends StatelessWidget {
       
     );
   }
-
+  
   Widget mainscreen(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final user = context.select((AppBloc bloc) => bloc.state.user);
-
+  
     return Container(
         padding: const EdgeInsets.all(16),
       child: Column(

@@ -4,16 +4,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todos_repository/todos_repository.dart';
 import 'package:travelapp/edit_todo/bloc/edit_todo_bloc.dart';
+import 'package:travelapp/firestore_service.dart';
 import 'package:travelapp/l10n/l10n.dart';
 
 class EditTodoPage extends StatelessWidget {
   const EditTodoPage({super.key});
-
   static Route<void> route({Todo? initialTodo}) {
     return MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) => BlocProvider(
+      builder: (context) => 
+      
+      BlocProvider(
         create: (context) => EditTodoBloc(
+          FirestoreService(),
           todosRepository: context.read<TodosRepository>(),
           initialTodo: initialTodo,
         ),
@@ -21,6 +24,7 @@ class EditTodoPage extends StatelessWidget {
       ),
     );
   }
+  
 
   @override
   Widget build(BuildContext context) {
