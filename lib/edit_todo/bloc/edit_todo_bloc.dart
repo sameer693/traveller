@@ -2,17 +2,14 @@ import 'dart:js';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:form_inputs/form_inputs.dart';
 import 'package:todos_repository/todos_repository.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travelapp/app/bloc/app_bloc.dart';
+import 'package:travelapp/firestore_service.dart';
 part 'edit_todo_event.dart';
 part 'edit_todo_state.dart';
 
 class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
-  EditTodoBloc({
+   final FirestoreService _firestoreService;
+  EditTodoBloc(this._firestoreService, {
     required TodosRepository todosRepository,
     required Todo? initialTodo,
   })  : _todosRepository = todosRepository,
@@ -26,10 +23,10 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     on<EditTodoTitleChanged>(_onTitleChanged);
     on<EditTodoDescriptionChanged>(_onDescriptionChanged);
     on<EditTodoSubmitted>(_onSubmitted);
+    
   }
 
   final TodosRepository _todosRepository;
-
   void _onTitleChanged(
     EditTodoTitleChanged event,
     Emitter<EditTodoState> emit,
@@ -56,8 +53,10 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
 
     try {
       //store it in firestore or edit
-    
+      
       await _todosRepository.saveTodo(todo);
+      await _firestoreService.addTodo(todo); // Add todo to Firestore
+    
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));
@@ -65,4 +64,3 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
   }
 }
 
-class FirebaseAuth {}
