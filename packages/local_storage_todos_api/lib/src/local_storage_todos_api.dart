@@ -17,7 +17,8 @@ class LocalStorageTodosApi extends TodosApi {
   }) : _plugin = plugin {
     _init();
   }
-
+ 
+  
   final SharedPreferences _plugin;
 
   final _todoStreamController = BehaviorSubject<List<Todo>>.seeded(const []);
@@ -52,6 +53,7 @@ class LocalStorageTodosApi extends TodosApi {
 
   @override
   Future<void> saveTodo(Todo todo) {
+
     final todos = [..._todoStreamController.value];
     final todoIndex = todos.indexWhere((t) => t.id == todo.id);
     if (todoIndex >= 0) {
@@ -59,7 +61,6 @@ class LocalStorageTodosApi extends TodosApi {
     } else {
       todos.add(todo);
     }
-
     _todoStreamController.add(todos);
     return _setValue(kTodosCollectionKey, json.encode(todos));
   }

@@ -20,6 +20,15 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Center(
             child: Text('Home', style: TextStyle(color: Colors.white))),
+          actions: <Widget>[
+          IconButton(
+            key: const Key('homePage_logout_iconButton'),
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              context.read<AppBloc>().add(const AppLogoutRequested());
+            },
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(

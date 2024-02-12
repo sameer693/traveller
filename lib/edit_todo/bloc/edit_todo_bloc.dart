@@ -1,7 +1,13 @@
+import 'dart:js';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:form_inputs/form_inputs.dart';
 import 'package:todos_repository/todos_repository.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travelapp/app/bloc/app_bloc.dart';
 part 'edit_todo_event.dart';
 part 'edit_todo_state.dart';
 
@@ -49,6 +55,8 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     );
 
     try {
+      //store it in firestore or edit
+    
       await _todosRepository.saveTodo(todo);
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
@@ -56,3 +64,5 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     }
   }
 }
+
+class FirebaseAuth {}

@@ -17,7 +17,7 @@ Future<void> main() async {
 
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
-
+  
   final todosApi = LocalStorageTodosApi(
     plugin: await SharedPreferences.getInstance(),
   );
