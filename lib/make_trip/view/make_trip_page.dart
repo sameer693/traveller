@@ -1,9 +1,10 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todos_api/todos_api.dart';
 import 'package:travelapp/firestore_service.dart';
 import 'package:travelapp/make_trip/bloc/make_trip_bloc.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MakeTripPage extends StatefulWidget {
   @override
@@ -28,10 +29,12 @@ class _MakeTripPageState extends State<MakeTripPage> {
   _MakeTripPageState()
       : _startDate = DateTime.now(),
         _endDate = DateTime.now().add(Duration(days: 1));
-  List<String> _friendsEmails = [];
+
+  final List<String> _friendsEmails = [];
   final _emailController = TextEditingController();
   FirestoreService firestoreService = FirestoreService();
   final _nameController = TextEditingController();
+
   void _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -69,7 +72,6 @@ class _MakeTripPageState extends State<MakeTripPage> {
       );
       return;
     }
-
     setState(() {
       _friendsEmails.add(email);
     });
@@ -170,6 +172,7 @@ class _MakeTripPageState extends State<MakeTripPage> {
                 // Create a new trip
                 print(_friendsEmails.toString());
                 final trip = Trip(
+                  owner: FirebaseAuth.instance.currentUser!.email!,
                   name: _nameController.text,
                   destination: 'destination',
                   startDate: _startDate!,
@@ -196,6 +199,7 @@ class Trip {
   String destination;
   DateTime startDate;
   DateTime endDate;
+  String owner;
   List<String> friendsEmails;
   List<Todo> todos;
 
@@ -206,16 +210,20 @@ class Trip {
     required this.endDate,
     required this.friendsEmails,
     required this.todos,
+    required this.owner,
   });
   // implement fromJson and toJson
   factory Trip.fromJson(Map<String, dynamic> json) {
+    print(json.toString());
+    print(json['startDate'].toString());
     return Trip(
       name: json['name'],
       destination: json['destination'],
-      startDate: json['startDate'],
-      endDate: json['endDate'],
-      friendsEmails: json['friendsEmails'],
-      todos: json['todos'],
+      startDate: (json['startDate']).toDate(),
+      endDate: (json['endDate']).toDate(),
+      friendsEmails: List<String>.from(json['friendsEmails']),
+      todos: List<Todo>.from(json['todos']),
+      owner: json['owner'],
     );
   }
   // implement toJson
@@ -227,6 +235,7 @@ class Trip {
       'endDate': endDate,
       'friendsEmails': friendsEmails,
       'todos': todos,
+      'owner': owner,
     };
   }
 }

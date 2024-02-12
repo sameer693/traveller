@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todos_repository/todos_repository.dart';
 import 'package:travelapp/app/bloc/app_bloc.dart';
-  import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:travelapp/make_trip/view/make_trip_page.dart';
+
 class FirestoreService {
   //get email from
 
@@ -14,18 +16,32 @@ class FirestoreService {
   final CollectionReference _tripsCollection =
       FirebaseFirestore.instance.collection('trips');
 
-  Future<void>addtrip(Trip trip) {
+  Future<void> addtrip(Trip trip) {
     String email = FirebaseAuth.instance.currentUser!.email!;
-    return _tripsCollection.doc(email).set({trip.name:{
+    return _tripsCollection.add({
+      'owner': trip.owner,
       'destination': trip.destination,
       'startDate': trip.startDate,
       'endDate': trip.endDate,
       'friendsEmails': trip.friendsEmails,
       'todos': trip.todos,
-    }}
-    ,SetOptions(merge: true))
+      'name': trip.name,
+    })
       ..then((value) => print("Trip added successfully!"))
           .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  Stream<List<Trip>> getTrips() {
+    print('called');
+    return _tripsCollection.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+   
+        print(Trip.fromJson(data).toString());
+        print('*');
+        return Trip.fromJson(data);
+      }).toList();
+    });
   }
 
   Stream<List<Todo>> getTodos() {
@@ -43,13 +59,13 @@ class FirestoreService {
 
   Future<void> addTodo(Todo todo) {
     String email = FirebaseAuth.instance.currentUser!.email!;
-    return _todosCollection.doc(email).set({todo.id:{
-      'title': todo.title,
-      'isCompleted': todo.isCompleted,
-      'description' :todo.description,
-      
-    }}
-    ,SetOptions(merge: true))
+    return _todosCollection.doc(email).set({
+      todo.id: {
+        'title': todo.title,
+        'isCompleted': todo.isCompleted,
+        'description': todo.description,
+      }
+    }, SetOptions(merge: true))
       ..then((value) => print("User added successfully!"))
           .catchError((error) => print("Failed to add user: $error"));
   }

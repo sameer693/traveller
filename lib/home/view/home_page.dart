@@ -4,6 +4,7 @@ import 'package:travelapp/app/app.dart';
 import 'package:travelapp/edit_todo/view/edit_todo_page.dart';
 import 'package:travelapp/home/widgets/avatar.dart';
 import 'package:travelapp/make_trip/make_trip.dart';
+import 'package:travelapp/make_trip/view/view_trip_page.dart';
 import 'package:travelapp/stats/view/stats_page.dart';
 import 'package:travelapp/themes/bloc/theme_bloc.dart';
 import 'package:travelapp/todos_overview/view/todos_overview_page.dart'; // Import the HomeCubit
@@ -122,9 +123,7 @@ class HomePage extends StatelessWidget {
         ),
         IconButton(
           icon: Icon(Icons.list),
-          onPressed: () {
-            // TODO: Implement functionality to view a trip list
-          },
+          onPressed: () => Navigator.of(context).push(ViewTripPage.route()),
         ),
         IconButton(
           icon: Icon(Icons.search),
