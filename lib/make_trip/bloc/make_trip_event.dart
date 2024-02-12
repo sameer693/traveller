@@ -8,11 +8,13 @@ abstract class MakeTripEvent extends Equatable {
 }
 
 class CreateTrip extends MakeTripEvent {
+  final String name;
   final String destination;
   final DateTime startDate;
   final DateTime endDate;
 
   const CreateTrip({
+    required this.name,
     required this.destination,
     required this.startDate,
     required this.endDate,

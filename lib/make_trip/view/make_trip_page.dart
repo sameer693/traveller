@@ -1,5 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todos_api/todos_api.dart';
+import 'package:travelapp/firestore_service.dart';
 import 'package:travelapp/make_trip/bloc/make_trip_bloc.dart';
 
 class MakeTripPage extends StatefulWidget {
@@ -22,12 +25,13 @@ class MakeTripPage extends StatefulWidget {
 class _MakeTripPageState extends State<MakeTripPage> {
   DateTime? _startDate;
   DateTime? _endDate;
-  _MakeTripPageState() 
-    : _startDate = DateTime.now(),
-      _endDate = DateTime.now().add(Duration(days: 1));
+  _MakeTripPageState()
+      : _startDate = DateTime.now(),
+        _endDate = DateTime.now().add(Duration(days: 1));
   List<String> _friendsEmails = [];
   final _emailController = TextEditingController();
-
+  FirestoreService firestoreService = FirestoreService();
+  final _nameController = TextEditingController();
   void _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -57,18 +61,19 @@ class _MakeTripPageState extends State<MakeTripPage> {
   }
 
   void _addFriendEmail(String email) {
-  final emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
-  if (!emailRegex.hasMatch(email)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Invalid email address')),
-    );
-    return;
-  }
+    final emailRegex =
+        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
+    if (!emailRegex.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid email address')),
+      );
+      return;
+    }
 
-  setState(() {
-    _friendsEmails.add(email);
-  });
-}
+    setState(() {
+      _friendsEmails.add(email);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +87,27 @@ class _MakeTripPageState extends State<MakeTripPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-            'Destination:',
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(height: 8),
-          TextField(
-            decoration: InputDecoration(
-              labelText: 'Enter destination',
+              'Name your Trip:',
+              style: TextStyle(fontSize: 18),
             ),
-          ),
-          SizedBox(height: 16),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Enter trip name',
+              ),
+              controller: _nameController,
+            ),
+            Text(
+              'Destination:',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Enter destination',
+              ),
+            ),
+            SizedBox(height: 16),
             Text(
               'Select Trip Dates:',
               style: TextStyle(fontSize: 18),
@@ -147,9 +163,70 @@ class _MakeTripPageState extends State<MakeTripPage> {
             Column(
               children: _friendsEmails.map((email) => Text(email)).toList(),
             ),
+            // Add a button to submit the form
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Create a new trip
+                print(_friendsEmails.toString());
+                final trip = Trip(
+                  name: _nameController.text,
+                  destination: 'destination',
+                  startDate: _startDate!,
+                  endDate: _endDate!,
+                  friendsEmails: _friendsEmails,
+                  todos: [],
+                );
+                // Add the trip to the database
+                firestoreService.addtrip(trip);
+                // Navigate back to the home page
+                Navigator.of(context).pop();
+              },
+              child: Text('Create Trip'),
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+class Trip {
+  String name;
+  String destination;
+  DateTime startDate;
+  DateTime endDate;
+  List<String> friendsEmails;
+  List<Todo> todos;
+
+  Trip({
+    required this.name,
+    required this.destination,
+    required this.startDate,
+    required this.endDate,
+    required this.friendsEmails,
+    required this.todos,
+  });
+  // implement fromJson and toJson
+  factory Trip.fromJson(Map<String, dynamic> json) {
+    return Trip(
+      name: json['name'],
+      destination: json['destination'],
+      startDate: json['startDate'],
+      endDate: json['endDate'],
+      friendsEmails: json['friendsEmails'],
+      todos: json['todos'],
+    );
+  }
+  // implement toJson
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'destination': destination,
+      'startDate': startDate,
+      'endDate': endDate,
+      'friendsEmails': friendsEmails,
+      'todos': todos,
+    };
   }
 }
