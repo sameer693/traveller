@@ -172,12 +172,12 @@ class _MakeTripPageState extends State<MakeTripPage> {
                     },
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email';
-                  }
-                  return null;
-                },
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter an email';
+                //   }
+                //   return null;
+                // },
               ),
               SizedBox(height: 8),
               Text('Friends Emails:'),
