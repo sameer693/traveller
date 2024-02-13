@@ -24,8 +24,8 @@ class MakeTripPage extends StatefulWidget {
 }
 
 class _MakeTripPageState extends State<MakeTripPage> {
-  DateTime? _startDate;
-  DateTime? _endDate;
+  DateTime _startDate;
+  DateTime _endDate;
   _MakeTripPageState()
       : _startDate = DateTime.now(),
         _endDate = DateTime.now().add(Duration(days: 1));
@@ -34,6 +34,8 @@ class _MakeTripPageState extends State<MakeTripPage> {
   final _emailController = TextEditingController();
   FirestoreService firestoreService = FirestoreService();
   final _nameController = TextEditingController();
+  final _destinationController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   void _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -53,7 +55,7 @@ class _MakeTripPageState extends State<MakeTripPage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: _startDate ?? DateTime.now(),
+      firstDate: _startDate,
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _endDate) {
@@ -85,110 +87,131 @@ class _MakeTripPageState extends State<MakeTripPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Name your Trip:',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Enter trip name',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Name your Trip:',
+                style: TextStyle(fontSize: 18),
               ),
-              controller: _nameController,
-            ),
-            Text(
-              'Destination:',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Enter destination',
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Select Trip Dates:',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => _selectStartDate(context),
-                  child: Text('Select Start Date'),
+              SizedBox(height: 8),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Enter trip name',
                 ),
-                SizedBox(width: 8),
-                Text(_startDate != null
-                    ? 'Start Date: ${_startDate.toString()}'
-                    : 'Start Date: Not Selected'),
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => _selectEndDate(context),
-                  child: Text('Select End Date'),
-                ),
-                SizedBox(width: 8),
-                Text(_endDate != null
-                    ? 'End Date: ${_endDate.toString()}'
-                    : 'End Date: Not Selected'),
-              ],
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Add Friends Emails:',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    // Add the email to the list
-                    _addFriendEmail(_emailController.text);
-                    _emailController.clear();
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: 8),
-            Text('Friends Emails:'),
-            Column(
-              children: _friendsEmails.map((email) => Text(email)).toList(),
-            ),
-            // Add a button to submit the form
-            SizedBox(height: 16),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Create a new trip
-                  final trip = Trip(
-                    owner: FirebaseAuth.instance.currentUser!.email!,
-                    name: _nameController.text,
-                    destination: 'destination',
-                    startDate: _startDate!,
-                    endDate: _endDate!,
-                    friendsEmails: _friendsEmails,
-                    todos: [],
-                  );
-                  // Add the trip to the database
-                  firestoreService.addtrip(trip);
-                  // Navigate back to the home page
-                  Navigator.of(context).pop();
+                controller: _nameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a trip name';
+                  }
+                  return null;
                 },
-                child: Text('Create Trip'),
               ),
-            )
-          ],
+              Text(
+                'Destination:',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Enter destination',
+                ),
+                controller: _destinationController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a destination';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Select Trip Dates:',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _selectStartDate(context),
+                    child: Text('Select Start Date'),
+                  ),
+                  SizedBox(width: 8),
+                  Text('Start Date: ${_startDate.toString()}'),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _selectEndDate(context),
+                    child: Text('Select End Date'),
+                  ),
+                  SizedBox(width: 8),
+                  Text('End Date: ${_endDate.toString()}'),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Add Friends Emails:',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      // Add the email to the list
+                      _addFriendEmail(_emailController.text);
+                      _emailController.clear();
+                    },
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an email';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 8),
+              Text('Friends Emails:'),
+              Column(
+                children: _friendsEmails.map((email) => Text(email)).toList(),
+              ),
+              // Add a button to submit the form
+              SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Validate the form
+                    if (_formKey.currentState!.validate()) {
+                      // Create a new trip
+                      final trip = Trip(
+                        owner: FirebaseAuth.instance.currentUser!.email!,
+                        name: _nameController.text,
+                        destination: _destinationController.text,
+                        startDate: _startDate,
+                        endDate: _endDate,
+                        friendsEmails: _friendsEmails,
+                        todos: [],
+                      );
+                      // Add the trip to the database
+                      firestoreService.addtrip(trip);
+                      // Navigate back to the home page
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Text('Create Trip'),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -203,7 +226,7 @@ class Trip {
   String owner;
   List<String> friendsEmails;
   List<Todo> todos;
-  String? id;
+  String id;
 
   Trip({
     this.id = '',
