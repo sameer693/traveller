@@ -30,16 +30,20 @@ class FirestoreService {
       ..then((value) => print("Trip added successfully!"))
           .catchError((error) => print("Failed to add user: $error"));
   }
-
+  Future<void> addfriendtoTrip(String? tripId, String friendEmail) {
+    if (tripId == null) {
+      return Future.error('tripId is null');
+    }
+    return _tripsCollection.doc(tripId).update({
+      'friendsEmails': FieldValue.arrayUnion([friendEmail]),
+    });
+  }
   Stream<List<Trip>> getTrips() {
     print('called');
     return _tripsCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-   
-        print(Trip.fromJson(data).toString());
-        print('*');
-        return Trip.fromJson(data);
+        return Trip.fromJson(data, doc.id);
       }).toList();
     });
   }

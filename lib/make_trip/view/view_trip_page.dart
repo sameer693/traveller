@@ -16,6 +16,7 @@ class ViewTripPage extends StatefulWidget {
 
 class _ViewTripPageState extends State<ViewTripPage> {
   final firestoreService = FirestoreService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,17 +33,27 @@ class _ViewTripPageState extends State<ViewTripPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           }
+          
           return ListView(
-            children: snapshot.data!.map((Trip trip) {
-              return ListTile(
-                title: Text(trip.name),
-                subtitle: Text(trip.destination),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.of(context).push(
-                    ViewTripDetailsPage.route(trip),
-                  );
-                },
+            children: snapshot.data!.map((Trip trip) {              
+              return Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.airplanemode_active),
+                      title: Text(trip.name),
+                      subtitle: Text(trip.destination),
+                      trailing: Icon(Icons.arrow_forward),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => TirpDetails(trip: trip),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               );
             }).toList(),
           );
@@ -52,22 +63,39 @@ class _ViewTripPageState extends State<ViewTripPage> {
   }
 }
 
-class ViewTripDetailsPage extends StatefulWidget {
+class TirpDetails extends StatefulWidget {
   final Trip trip;
-  ViewTripDetailsPage({required this.trip});
-  static Route<void> route(Trip trip) {
-    return MaterialPageRoute(
-      builder: (context) => ViewTripDetailsPage(trip: trip),
-    );
+  const TirpDetails({Key? key, required this.trip}) : super(key: key);
+
+  @override
+  _TirpDetailsState createState() => _TirpDetailsState();
+}
+
+class _TirpDetailsState extends State<TirpDetails> {
+  final firestoreService = FirestoreService();
+
+  void _addFriendEmail(String email) {
+    final emailRegex = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
+    if (!emailRegex.hasMatch(email)) {
+      print(email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email address'),
+        ),
+      );
+      return;
+    }
+    setState(() {
+      widget.trip.friendsEmails.add(email);
+      firestoreService.addfriendtoTrip(widget.trip.id, email);
+    });
   }
 
   @override
-  _ViewTripDetailsPageState createState() => _ViewTripDetailsPageState();
-}
-
-class _ViewTripDetailsPageState extends State<ViewTripDetailsPage> {
-  @override
   Widget build(BuildContext context) {
+    final _emailController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.trip.name),
@@ -79,11 +107,51 @@ class _ViewTripDetailsPageState extends State<ViewTripDetailsPage> {
             Text('Start Date: ${widget.trip.startDate}'),
             Text('End Date: ${widget.trip.endDate}'),
             Text('Friends: ${widget.trip.friendsEmails}'),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(EditTodoPage.route());
-              },
-              child: Text('Add Todo'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(EditTodoPage.route());
+                  },
+                  child: const Text('Add Todo'),
+                ),
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Add Friend'),
+                          content: TextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Enter friend\'s email',
+                            ),
+                            controller: _emailController,
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () {
+                                _addFriendEmail(_emailController.text);
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Add Friend'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Text('Add Friend'),
+                ),
+              ],
             ),
           ],
         ),

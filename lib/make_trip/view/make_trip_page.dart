@@ -167,26 +167,27 @@ class _MakeTripPageState extends State<MakeTripPage> {
             ),
             // Add a button to submit the form
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Create a new trip
-                print(_friendsEmails.toString());
-                final trip = Trip(
-                  owner: FirebaseAuth.instance.currentUser!.email!,
-                  name: _nameController.text,
-                  destination: 'destination',
-                  startDate: _startDate!,
-                  endDate: _endDate!,
-                  friendsEmails: _friendsEmails,
-                  todos: [],
-                );
-                // Add the trip to the database
-                firestoreService.addtrip(trip);
-                // Navigate back to the home page
-                Navigator.of(context).pop();
-              },
-              child: Text('Create Trip'),
-            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Create a new trip
+                  final trip = Trip(
+                    owner: FirebaseAuth.instance.currentUser!.email!,
+                    name: _nameController.text,
+                    destination: 'destination',
+                    startDate: _startDate!,
+                    endDate: _endDate!,
+                    friendsEmails: _friendsEmails,
+                    todos: [],
+                  );
+                  // Add the trip to the database
+                  firestoreService.addtrip(trip);
+                  // Navigate back to the home page
+                  Navigator.of(context).pop();
+                },
+                child: Text('Create Trip'),
+              ),
+            )
           ],
         ),
       ),
@@ -202,8 +203,10 @@ class Trip {
   String owner;
   List<String> friendsEmails;
   List<Todo> todos;
+  String? id;
 
   Trip({
+    this.id = '',
     required this.name,
     required this.destination,
     required this.startDate,
@@ -213,18 +216,19 @@ class Trip {
     required this.owner,
   });
   // implement fromJson and toJson
-  factory Trip.fromJson(Map<String, dynamic> json) {
+  factory Trip.fromJson(Map<String, dynamic> json, String key) {
     print(json.toString());
+    print(key);
     print(json['startDate'].toString());
     return Trip(
-      name: json['name'],
-      destination: json['destination'],
-      startDate: (json['startDate']).toDate(),
-      endDate: (json['endDate']).toDate(),
-      friendsEmails: List<String>.from(json['friendsEmails']),
-      todos: List<Todo>.from(json['todos']),
-      owner: json['owner'],
-    );
+        name: json['name'],
+        destination: json['destination'],
+        startDate: (json['startDate']).toDate(),
+        endDate: (json['endDate']).toDate(),
+        friendsEmails: List<String>.from(json['friendsEmails']),
+        todos: List<Todo>.from(json['todos']),
+        owner: json['owner'],
+        id: key);
   }
   // implement toJson
   Map<String, dynamic> toJson() {
