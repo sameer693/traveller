@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelapp/firestore_service.dart';
 
 import 'package:travelapp/edit_todo/view/edit_todo_page.dart';
 import 'package:travelapp/make_trip/view/make_trip_page.dart';
 import 'package:intl/intl.dart';
+import 'package:travelapp/todos_overview/bloc/todos_overview_bloc.dart';
+import 'package:travelapp/todos_overview/widgets/todo_list_tile.dart';
 
 class ViewTripPage extends StatefulWidget {
   @override
@@ -200,7 +203,11 @@ class _TirpDetailsState extends State<TirpDetails> {
                   'Add Friends Emails:',
                   style: TextStyle(fontSize: 18),
                 ),
-                Text('Friends:'),
+                Text('Friends:',style:TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic
+                ),),
                 Center(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -218,24 +225,43 @@ class _TirpDetailsState extends State<TirpDetails> {
                     },
                   ),
                 ),
-                Text('Todos:'),
+                Text('Todos:',style:TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic
+                ),),
                 Center(
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: widget.trip.todos.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        leading: Icon(Icons.check),
-                        title: Text(widget.trip.todos[index].title,
-                            textAlign: TextAlign.center),
-                        leadingAndTrailingTextStyle: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
+                      final todo = widget.trip.todos[index];
+                      return TodoListTile(
+                      todo: todo,
+                      onToggleCompleted: (isCompleted) {
+                        context.read<TodosOverviewBloc>().add(
+                              TodosOverviewTodoCompletionToggled(
+                                todo: todo,
+                                isCompleted: isCompleted,
+                              ),
+                            );
+                      },
+                      onDismissed: (_) {
+                        context
+                            .read<TodosOverviewBloc>()
+                            .add(TodosOverviewTodoDeleted(todo));
+                      },
+                      onTap: () {
+                        Navigator.of(context).push(
+                          EditTodoPage.route(initialTodo: todo)
+                        );
+                      }
+                    );
                     },
-                  ),
-                ),
+              ),
+                    ),
+               
+                    
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
