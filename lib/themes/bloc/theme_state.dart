@@ -5,8 +5,7 @@ class ThemeState extends Equatable {
 
   const ThemeState(this.themeData);
 
-  static ThemeState get darkTheme =>
-      ThemeState(ThemeData.dark().copyWith(
+  static ThemeState get darkTheme => ThemeState(ThemeData.dark().copyWith(
         // Customize dark theme properties
         useMaterial3: true,
         brightness: Brightness.dark,
@@ -27,27 +26,28 @@ class ThemeState extends Equatable {
         ),
       ));
 
-  static ThemeState get lightTheme =>
-      ThemeState(ThemeData.light().copyWith(
+  static ThemeState get lightTheme => ThemeState(ThemeData.light().copyWith(
         // Customize light theme properties
         useMaterial3: true,
-        textTheme: GoogleFonts.openSansTextTheme(),
+        textTheme: GoogleFonts.openSansTextTheme().apply(
+          bodyColor: Color(0xFF000000), // Replace with your desired text color
+          displayColor:
+              Color(0xFF000000), // Replace with your desired text color
+        ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 113, 243, 230),
+          backgroundColor: Color(0xFFFFECEC),
           elevation: 4,
         ),
         colorScheme: const ColorScheme.light(
-          primary: Color(0xFF0097A7),
-          secondary: Color(0xFF009688),
-          background: Color(0xFFE0F2F1),
+          primary: Color(0xFFB65972),
+          secondary: Color(0xFFD89CAC),
+          background: Color(0xFFFFECEC),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-        
         ),
-        
       ));
 
   @override

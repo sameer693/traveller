@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
-            child: Text('Home', style: TextStyle(color: Colors.white))),
+            child: Text('Home', style: TextStyle(color: Colors.black))),
         actions: <Widget>[
           IconButton(
             key: const Key('homePage_logout_iconButton'),
@@ -210,12 +210,12 @@ class HomePage extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.background,
             ),
             child: Text(
               'Options',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 24,
               ),
             ),
