@@ -9,27 +9,23 @@ import 'package:travelapp/l10n/l10n.dart';
 import 'package:travelapp/make_trip/make_trip.dart';
 
 class EditTodoPage extends StatelessWidget {
-  
-  
   const EditTodoPage({super.key});
 
-
-
-  static Route<void> route({Todo? initialTodo}) {
+  static Route<void> route({Todo? initialTodo, Trip? trip}) {
+    print(trip!.toString());
     return MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) =>       
-      BlocProvider(
+      builder: (context) => BlocProvider(
         create: (context) => EditTodoBloc(
           FirestoreService(),
           todosRepository: context.read<TodosRepository>(),
           initialTodo: initialTodo,
+          trip: trip, // Pass the trip here
         ),
         child: const EditTodoPage(),
       ),
     );
   }
-  
 
   @override
   Widget build(BuildContext context) {

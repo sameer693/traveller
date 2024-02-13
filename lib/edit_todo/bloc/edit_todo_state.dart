@@ -15,12 +15,14 @@ final class EditTodoState extends Equatable {
     this.initialTodo,
     this.title = '',
     this.description = '',
+    this.trip,
   });
 
   final EditTodoStatus status;
   final Todo? initialTodo;
   final String title;
   final String description;
+  final Trip? trip;
 
   bool get isNewTodo => initialTodo == null;
 
@@ -29,12 +31,14 @@ final class EditTodoState extends Equatable {
     Todo? initialTodo,
     String? title,
     String? description,
+    Trip? trip,
   }) {
     return EditTodoState(
       status: status ?? this.status,
       initialTodo: initialTodo ?? this.initialTodo,
       title: title ?? this.title,
       description: description ?? this.description,
+      trip: trip ?? this.trip,
     );
   }
 

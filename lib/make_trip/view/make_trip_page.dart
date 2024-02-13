@@ -240,16 +240,24 @@ class Trip {
   });
   // implement fromJson and toJson
   factory Trip.fromJson(Map<String, dynamic> json, String key) {
-    print(json.toString());
-    print(key);
-    print(json['startDate'].toString());
+    //make a list of todos  from a json todo which is a list of maps
+    List<Todo> todos = [];
+    for (var todo in json['todos']) {
+      Map<String, dynamic> todoData = todo;
+      todoData.map((key, value) {
+        value['id'] = key;
+        return MapEntry(key, value);
+      }).forEach((key, value) {
+        todos.add(Todo.fromJson(value));
+      });
+     }
     return Trip(
         name: json['name'],
         destination: json['destination'],
         startDate: (json['startDate']).toDate(),
         endDate: (json['endDate']).toDate(),
         friendsEmails: List<String>.from(json['friendsEmails']),
-        todos: List<Todo>.from(json['todos']),
+        todos: todos,
         owner: json['owner'],
         id: key);
   }

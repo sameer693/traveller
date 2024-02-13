@@ -222,7 +222,7 @@ class _TirpDetailsState extends State<TirpDetails> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(EditTodoPage.route());
+                    Navigator.of(context).push(EditTodoPage.route(trip: widget.trip));
                   },
                   child: const Text('Add Todo'),
                 ),

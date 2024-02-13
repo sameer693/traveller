@@ -4,26 +4,29 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:todos_repository/todos_repository.dart';
 import 'package:travelapp/firestore_service.dart';
+import 'package:travelapp/make_trip/view/make_trip_page.dart';
 part 'edit_todo_event.dart';
 part 'edit_todo_state.dart';
 
 class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
-   final FirestoreService _firestoreService;
-  EditTodoBloc(this._firestoreService, {
+  final FirestoreService _firestoreService;
+  EditTodoBloc(
+    this._firestoreService, {
     required TodosRepository todosRepository,
     required Todo? initialTodo,
+    required Trip? trip,
   })  : _todosRepository = todosRepository,
         super(
           EditTodoState(
             initialTodo: initialTodo,
             title: initialTodo?.title ?? '',
             description: initialTodo?.description ?? '',
+            trip: trip,
           ),
         ) {
     on<EditTodoTitleChanged>(_onTitleChanged);
     on<EditTodoDescriptionChanged>(_onDescriptionChanged);
     on<EditTodoSubmitted>(_onSubmitted);
-    
   }
 
   final TodosRepository _todosRepository;
@@ -53,14 +56,16 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
 
     try {
       //store it in firestore or edit
-      
+      print('object');
+      print(state.trip!.toString());
+      print(state.trip!.id);
       await _todosRepository.saveTodo(todo);
-      await _firestoreService.addTodo(todo); // Add todo to Firestore
-    
+      await _firestoreService.addTodo(
+          todo, state.trip); // Add todo to Firestore
+
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));
     }
   }
 }
-

@@ -15,7 +15,7 @@ class FirestoreService {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _tripsCollection =
       FirebaseFirestore.instance.collection('trips');
-  
+
   //edit the trip
   Future<void> editTrip(Trip trip) {
     return _tripsCollection.doc(trip.id).update({
@@ -28,6 +28,7 @@ class FirestoreService {
       'name': trip.name,
     });
   }
+
   Future<void> addtrip(Trip trip) {
     String email = FirebaseAuth.instance.currentUser!.email!;
     return _tripsCollection.add({
@@ -42,6 +43,7 @@ class FirestoreService {
       ..then((value) => print("Trip added successfully!"))
           .catchError((error) => print("Failed to add user: $error"));
   }
+  
   Future<void> addfriendtoTrip(String? tripId, String friendEmail) {
     if (tripId == null) {
       return Future.error('tripId is null');
@@ -50,6 +52,7 @@ class FirestoreService {
       'friendsEmails': FieldValue.arrayUnion([friendEmail]),
     });
   }
+
   Stream<List<Trip>> getTrips() {
     print('called');
     return _tripsCollection.snapshots().map((snapshot) {
@@ -73,7 +76,29 @@ class FirestoreService {
     });
   }
 
-  Future<void> addTodo(Todo todo) {
+  Future<void> addTodo(Todo todo, Trip? trip) {
+    if (trip == null) {
+      return Future.error('trip is null');
+    }
+    if (trip.id == '') {
+      return Future.error('trip id is empty');
+    }
+    print(trip.id);
+
+    return _tripsCollection.doc(trip.id).update({
+      'todos': FieldValue.arrayUnion([
+        {
+          todo.id: {
+            'title': todo.title,
+            'isCompleted': todo.isCompleted,
+            'description': todo.description,
+          }
+        }
+      ]),
+    })
+      ..then((value) => print("User added successfully!"))
+          .catchError((error) => print("Failed to add user: $error"));
+
     String email = FirebaseAuth.instance.currentUser!.email!;
     return _todosCollection.doc(email).set({
       todo.id: {
