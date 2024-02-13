@@ -151,7 +151,7 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.network(
+                    child: Image.asset(
                       imageUrls[index],
                       width: screenWidth / 2, // Adjust the value as needed
                       height: screenHeight / 8, // Adjust the value as needed
