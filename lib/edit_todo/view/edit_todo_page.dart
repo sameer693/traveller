@@ -12,7 +12,7 @@ class EditTodoPage extends StatelessWidget {
   const EditTodoPage({super.key});
 
   static Route<void> route({Todo? initialTodo, Trip? trip}) {
-    print(trip!.toString());
+
     return MaterialPageRoute(
       fullscreenDialog: true,
       builder: (context) => BlocProvider(
