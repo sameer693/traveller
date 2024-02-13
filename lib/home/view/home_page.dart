@@ -110,30 +110,41 @@ class HomePage extends StatelessWidget {
   }
 
   Widget iconsTray(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.playlist_add),
-          onPressed: () => Navigator.of(context).push(MakeTripPage.route()),
-          // onPressed: () {
-          //   // TODO: Implement functionality to make a todo list for a trip
-          //   //go to the todos overview page
-          // },
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: <Widget>[
+      InkWell(
+        onTap: () => Navigator.of(context).push(MakeTripPage.route()),
+        child: Column(
+          children: <Widget>[
+            Icon(Icons.playlist_add),
+            Text('Make a Trip'),
+          ],
         ),
-        IconButton(
-          icon: Icon(Icons.list),
-          onPressed: () => Navigator.of(context).push(ViewTripPage.route()),
+      ),
+      InkWell(
+        onTap: () => Navigator.of(context).push(ViewTripPage.route()),
+        child: Column(
+          children: <Widget>[
+            Icon(Icons.list),
+            Text('View Trips'),
+          ],
         ),
-        IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {
-            // TODO: Implement functionality to search popular top list
-          },
+      ),
+      InkWell(
+        onTap: () {
+          // TODO: Implement functionality to search popular top list
+        },
+        child: Column(
+          children: <Widget>[
+            Icon(Icons.search),
+            Text('Search Trips'),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
   Widget mobileMenu(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
