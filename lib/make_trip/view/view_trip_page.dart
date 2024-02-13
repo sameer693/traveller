@@ -106,7 +106,19 @@ class _TirpDetailsState extends State<TirpDetails> {
             Text('Destination: ${widget.trip.destination}'),
             Text('Start Date: ${widget.trip.startDate}'),
             Text('End Date: ${widget.trip.endDate}'),
-            Text('Friends: ${widget.trip.friendsEmails}'),
+            Text('Friends:'),
+            Center(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.trip.friendsEmails.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(widget.trip.friendsEmails[index], textAlign: TextAlign.center),
+                
+                  );
+                },
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
