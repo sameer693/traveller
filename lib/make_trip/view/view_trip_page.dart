@@ -33,9 +33,9 @@ class _ViewTripPageState extends State<ViewTripPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           }
-          
+
           return ListView(
-            children: snapshot.data!.map((Trip trip) {              
+            children: snapshot.data!.map((Trip trip) {
               return Card(
                 child: Column(
                   children: [
@@ -73,6 +73,7 @@ class TirpDetails extends StatefulWidget {
 
 class _TirpDetailsState extends State<TirpDetails> {
   final firestoreService = FirestoreService();
+  
 
   void _addFriendEmail(String email) {
     final emailRegex = RegExp(
@@ -94,18 +95,110 @@ class _TirpDetailsState extends State<TirpDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final _emailController = TextEditingController();
+      final _emailController = TextEditingController();
+      final _nameController = TextEditingController(text: widget.trip.name);
+      final _destinationController = TextEditingController(text: widget.trip.destination);
+      DateTime? _startDate=widget.trip.startDate;
+      DateTime? _endDate=widget.trip.endDate;
+      void _selectStartDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _startDate) {
+      setState(() {
+        _startDate = picked;
+      });
+    }
+  }
+
+  void _selectEndDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _endDate) {
+      setState(() {
+        _endDate = picked;
+      });
+    }
+  }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.trip.name),
       ),
-      body: Center(
+      //make it scrollable
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child:
+      Center(
         child: Column(
           children: [
-            Text('Destination: ${widget.trip.destination}'),
-            Text('Start Date: ${widget.trip.startDate}'),
-            Text('End Date: ${widget.trip.endDate}'),
+            Text(
+              'Name your Trip:',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Enter trip name',
+              ),
+            
+              controller: _nameController,
+            ),
+            Text(
+              'Destination:',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Enter destination',
+              ),
+              controller: _destinationController,
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Select Trip Dates:',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () => _selectStartDate(context),
+                  child: Text('Select Start Date'),
+                ),
+                SizedBox(width: 8),
+                Text(_startDate != null
+                    ? 'Start Date: ${_startDate.toString()}'
+                    : 'Start Date: Not Selected'),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () => _selectEndDate(context),
+                  child: Text('Select End Date'),
+                ),
+                SizedBox(width: 8),
+                Text(_endDate != null
+                    ? 'End Date: ${_endDate.toString()}'
+                    : 'End Date: Not Selected'),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Add Friends Emails:',
+              style: TextStyle(fontSize: 18),
+            ),         
             Text('Friends:'),
             Center(
               child: ListView.builder(
@@ -113,8 +206,13 @@ class _TirpDetailsState extends State<TirpDetails> {
                 itemCount: widget.trip.friendsEmails.length,
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
-                    title: Text(widget.trip.friendsEmails[index], textAlign: TextAlign.center),
-                
+                    leading: Icon(Icons.person),
+                    title: Text(widget.trip.friendsEmails[index],
+                        textAlign: TextAlign.center),
+                    leadingAndTrailingTextStyle: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   );
                 },
               ),
@@ -162,12 +260,47 @@ class _TirpDetailsState extends State<TirpDetails> {
                     );
                   },
                   child: const Text('Add Friend'),
+
                 ),
+                // make changes here to submit the edited the trip 
+                SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_nameController.text.isEmpty ||
+                        _destinationController.text.isEmpty ||
+                        _startDate == null ||
+                        _endDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please fill all the fields'),
+                        ),
+                      );
+                      return;
+                    }
+                    Trip trip = Trip(
+                      id: widget.trip.id,
+                      owner: widget.trip.owner,
+                      name: _nameController.text,
+                      destination: _destinationController.text,
+                      startDate: _startDate!,
+                      endDate: _endDate!,
+                      friendsEmails: widget.trip.friendsEmails,
+                      todos: widget.trip.todos,
+                    );
+                    firestoreService.editTrip(trip);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Submit'),
+                ),
+
+
               ],
             ),
           ],
         ),
       ),
+    ),
+    ),
     );
   }
 }

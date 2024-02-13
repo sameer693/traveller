@@ -15,7 +15,19 @@ class FirestoreService {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _tripsCollection =
       FirebaseFirestore.instance.collection('trips');
-
+  
+  //edit the trip
+  Future<void> editTrip(Trip trip) {
+    return _tripsCollection.doc(trip.id).update({
+      'owner': trip.owner,
+      'destination': trip.destination,
+      'startDate': trip.startDate,
+      'endDate': trip.endDate,
+      'friendsEmails': trip.friendsEmails,
+      'todos': trip.todos,
+      'name': trip.name,
+    });
+  }
   Future<void> addtrip(Trip trip) {
     String email = FirebaseAuth.instance.currentUser!.email!;
     return _tripsCollection.add({
