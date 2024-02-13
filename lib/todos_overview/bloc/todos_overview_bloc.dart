@@ -45,6 +45,7 @@ class TodosOverviewBloc extends Bloc<TodosOverviewEvent, TodosOverviewState> {
     Emitter<TodosOverviewState> emit,
   ) async {
     final newTodo = event.todo.copyWith(isCompleted: event.isCompleted);
+    
     await _todosRepository.saveTodo(newTodo);
   }
 

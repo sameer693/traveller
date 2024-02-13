@@ -49,20 +49,18 @@ class EditTodoBloc extends Bloc<EditTodoEvent, EditTodoState> {
     Emitter<EditTodoState> emit,
   ) async {
     emit(state.copyWith(status: EditTodoStatus.loading));
+    print(state.initialTodo.toString());
     final todo = (state.initialTodo ?? Todo(title: '')).copyWith(
       title: state.title,
       description: state.description,
     );
-
     try {
       //store it in firestore or edit
-      print('object');
-      print(state.trip!.toString());
-      print(state.trip!.id);
-      await _todosRepository.saveTodo(todo);
-      await _firestoreService.addTodo(
-          todo, state.trip); // Add todo to Firestore
-
+    if (state.trip != null){
+    await _firestoreService.addTodo(
+            todo, state.trip);} // Add todo to Firestore
+        await _todosRepository.saveTodo(todo);
+      
       emit(state.copyWith(status: EditTodoStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTodoStatus.failure));

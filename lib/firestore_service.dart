@@ -43,7 +43,7 @@ class FirestoreService {
       ..then((value) => print("Trip added successfully!"))
           .catchError((error) => print("Failed to add user: $error"));
   }
-  
+
   Future<void> addfriendtoTrip(String? tripId, String friendEmail) {
     if (tripId == null) {
       return Future.error('tripId is null');
@@ -78,6 +78,7 @@ class FirestoreService {
 
   Future<void> addTodo(Todo todo, Trip? trip) {
     if (trip == null) {
+      print('trip is null');
       return Future.error('trip is null');
     }
     if (trip.id == '') {
