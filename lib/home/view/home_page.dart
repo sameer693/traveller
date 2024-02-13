@@ -158,9 +158,19 @@ class HomePage extends StatelessWidget {
               children: <Widget>[
                 Avatar(photo: user.photo),
                 const SizedBox(height: 4),
-                Text(user.email ?? ''),
+                Text(
+                  user.email ?? '',
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(user.name ?? ''),
+                Text(
+                  user.name ?? '',
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                  ),
+                ),
               ],
             ),
           ),

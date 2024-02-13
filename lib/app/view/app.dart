@@ -7,6 +7,7 @@ import 'package:todos_repository/todos_repository.dart';
 import 'package:travelapp/app/app.dart';
 import 'package:travelapp/l10n/l10n.dart';
 import 'package:travelapp/themes/bloc/theme_bloc.dart';
+import 'package:travelapp/themes/theme.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -50,7 +51,7 @@ class AppView extends StatelessWidget {
           return BlocBuilder<ThemeBloc, ThemeData>(
             builder: (context, state) {
               return MaterialApp(
-                theme: state,
+                theme: state,                
                 debugShowCheckedModeBanner: false,
                 home: FlowBuilder<AppStatus>(
                   state: context.select((AppBloc bloc) => bloc.state.status),

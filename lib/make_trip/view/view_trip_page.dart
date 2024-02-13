@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelapp/firestore_service.dart';
+
+import 'package:travelapp/edit_todo/view/edit_todo_page.dart';
 import 'package:travelapp/make_trip/view/make_trip_page.dart';
 
 class ViewTripPage extends StatefulWidget {
@@ -11,6 +13,7 @@ class ViewTripPage extends StatefulWidget {
     );
   }
 }
+
 class _ViewTripPageState extends State<ViewTripPage> {
   final firestoreService = FirestoreService();
   @override
@@ -20,32 +23,31 @@ class _ViewTripPageState extends State<ViewTripPage> {
         title: Text('View Trips'),
       ),
       body: Center(
-        child: StreamBuilder(
-          stream: firestoreService.getTrips(),
-          builder: (BuildContext context, AsyncSnapshot<List<Trip>> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-            return ListView(
-              children: snapshot.data!.map((Trip trip) {
-                return ListTile(
-                  title: Text(trip.name),
-                  subtitle: Text(trip.destination),
-                  trailing: Icon(Icons.arrow_forward),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      ViewTripDetailsPage.route(trip),
-                    );
-                  },
-                );
-              }).toList(),
-            );
-          },
-        )
-      ),
+          child: StreamBuilder(
+        stream: firestoreService.getTrips(),
+        builder: (BuildContext context, AsyncSnapshot<List<Trip>> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+          return ListView(
+            children: snapshot.data!.map((Trip trip) {
+              return ListTile(
+                title: Text(trip.name),
+                subtitle: Text(trip.destination),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () {
+                  Navigator.of(context).push(
+                    ViewTripDetailsPage.route(trip),
+                  );
+                },
+              );
+            }).toList(),
+          );
+        },
+      )),
     );
   }
 }
@@ -58,6 +60,7 @@ class ViewTripDetailsPage extends StatefulWidget {
       builder: (context) => ViewTripDetailsPage(trip: trip),
     );
   }
+
   @override
   _ViewTripDetailsPageState createState() => _ViewTripDetailsPageState();
 }
@@ -78,9 +81,7 @@ class _ViewTripDetailsPageState extends State<ViewTripDetailsPage> {
             Text('Friends: ${widget.trip.friendsEmails}'),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MakeTripPage.route(),
-                );
+                Navigator.of(context).push(EditTodoPage.route());
               },
               child: Text('Add Todo'),
             ),

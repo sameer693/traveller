@@ -6,14 +6,19 @@ import 'package:todos_repository/todos_repository.dart';
 import 'package:travelapp/edit_todo/bloc/edit_todo_bloc.dart';
 import 'package:travelapp/firestore_service.dart';
 import 'package:travelapp/l10n/l10n.dart';
+import 'package:travelapp/make_trip/make_trip.dart';
 
 class EditTodoPage extends StatelessWidget {
+  
+  
   const EditTodoPage({super.key});
+
+
+
   static Route<void> route({Todo? initialTodo}) {
     return MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) => 
-      
+      builder: (context) =>       
       BlocProvider(
         create: (context) => EditTodoBloc(
           FirestoreService(),

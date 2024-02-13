@@ -24,7 +24,7 @@ final theme = ThemeData(
 final darkTheme = ThemeData(
   textTheme: GoogleFonts.openSansTextTheme(),
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color.fromARGB(255, 113, 243, 230),
+    backgroundColor: Color.fromARGB(255, 99, 66, 198),
     elevation: 4,
   ),
   colorScheme: const ColorScheme.dark(
@@ -32,12 +32,15 @@ final darkTheme = ThemeData(
     secondary: Color(0xFF009688),
     background: Color(0xFFE0F2F1),
   ),
+  
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
     ),
   ),
 );
+
+
   Future<bool> isDark() async {
     
 
@@ -49,3 +52,5 @@ final darkTheme = ThemeData(
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("is_dark", !isDark);
   }
+//default system theme
+
