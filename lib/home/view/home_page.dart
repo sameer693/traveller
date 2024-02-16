@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
-            child: Text('Home', style: TextStyle(color: Colors.black))),
+            child: Text('Bhalu BKL', style: TextStyle(color: Colors.black))),
         actions: <Widget>[
           IconButton(
             key: const Key('homePage_logout_iconButton'),
