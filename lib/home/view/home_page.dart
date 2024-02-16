@@ -60,8 +60,11 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-            child: Text('Bhalu BKL', style: TextStyle(color: Colors.black))),
+        title: Center(
+            child: Text(
+  'Traveller',
+  style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
+)),
         actions: <Widget>[
           IconButton(
             key: const Key('homePage_logout_iconButton'),
@@ -140,9 +143,19 @@ class HomePage extends StatelessWidget {
                 }),
             Avatar(photo: user.photo),
             const SizedBox(height: 4),
-            Text(user.email ?? '', style: textTheme.titleLarge),
+            Text(
+  user.email ?? '',
+  style: textTheme.titleLarge?.copyWith(
+    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+  ),
+),
             const SizedBox(height: 4),
-            Text(user.name ?? '', style: textTheme.headlineSmall),
+            Text(
+  user.name ?? '',
+  style: textTheme.headlineSmall?.copyWith(
+    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+  ),
+),
             iconsTray(context),
             Expanded(
               child: ListView.builder(
@@ -174,7 +187,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Icon(Icons.playlist_add),
-              Text('Make a Trip'),
+              Text('Make a Trip', style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
             ],
           ),
         ),
@@ -183,7 +196,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Icon(Icons.list),
-              Text('View Trips'),
+              Text('View Trips', style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
             ],
           ),
         ),
@@ -194,7 +207,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Icon(Icons.search),
-              Text('Search Trips'),
+              Text('Search Trips', style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black)),
             ],
           ),
         ),
