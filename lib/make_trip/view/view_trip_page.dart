@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelapp/firestore_service.dart';
 
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travelapp/edit_todo/view/edit_todo_page.dart';
 import 'package:travelapp/make_trip/view/make_trip_page.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +21,7 @@ class ViewTripPage extends StatefulWidget {
 
 class _ViewTripPageState extends State<ViewTripPage> {
   final firestoreService = FirestoreService();
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +78,7 @@ class TirpDetails extends StatefulWidget {
 
 class _TirpDetailsState extends State<TirpDetails> {
   final firestoreService = FirestoreService();
+  
 
   void _addFriendEmail(String email) {
     final emailRegex =
@@ -102,7 +104,10 @@ class _TirpDetailsState extends State<TirpDetails> {
     final _nameController = TextEditingController(text: widget.trip.name);
     final _destinationController =
         TextEditingController(text: widget.trip.destination);
+    final _placeController = TextEditingController();
+  
     DateTime? _startDate = widget.trip.startDate;
+
     DateTime? _endDate = widget.trip.endDate;
     void _selectStartDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
@@ -203,11 +208,13 @@ class _TirpDetailsState extends State<TirpDetails> {
                   'Add Friends Emails:',
                   style: TextStyle(fontSize: 18),
                 ),
-                Text('Friends:',style:TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic
-                ),),
+                Text(
+                  'Friends:',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic),
+                ),
                 Center(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -225,11 +232,13 @@ class _TirpDetailsState extends State<TirpDetails> {
                     },
                   ),
                 ),
-                Text('Todos:',style:TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic
-                ),),
+                Text(
+                  'Places To go:',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic),
+                ),
                 Center(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -237,31 +246,78 @@ class _TirpDetailsState extends State<TirpDetails> {
                     itemBuilder: (BuildContext context, int index) {
                       final todo = widget.trip.todos[index];
                       return TodoListTile(
-                      todo: todo,
-                      onToggleCompleted: (isCompleted) {
-                        context.read<TodosOverviewBloc>().add(
-                              TodosOverviewTodoCompletionToggled(
-                                todo: todo,
-                                isCompleted: isCompleted,
-                              ),
-                            );
-                      },
-                      onDismissed: (_) {
-                        context
-                            .read<TodosOverviewBloc>()
-                            .add(TodosOverviewTodoDeleted(todo));
-                      },
-                      onTap: () {
-                        Navigator.of(context).push(
-                          EditTodoPage.route(initialTodo: todo)
-                        );
-                      }
-                    );
+                          todo: todo,
+                          onToggleCompleted: (isCompleted) {
+                            context.read<TodosOverviewBloc>().add(
+                                  TodosOverviewTodoCompletionToggled(
+                                    todo: todo,
+                                    isCompleted: isCompleted,
+                                  ),
+                                );
+                          },
+                          onDismissed: (_) {
+                            context
+                                .read<TodosOverviewBloc>()
+                                .add(TodosOverviewTodoDeleted(todo));
+                          },
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(EditTodoPage.route(initialTodo: todo));
+                          });
                     },
-              ),
-                    ),
-               
-                    
+                  ),
+                ),
+                Text(
+                  'Things to pack:',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic),
+                ),
+                Center(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget.trip.todos.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final todo = widget.trip.todos[index];
+                      return TodoListTile(
+                          todo: todo,
+                          onToggleCompleted: (isCompleted) {
+                            context.read<TodosOverviewBloc>().add(
+                                  TodosOverviewTodoCompletionToggled(
+                                    todo: todo,
+                                    isCompleted: isCompleted,
+                                  ),
+                                );
+                          },
+                          onDismissed: (_) {
+                            context
+                                .read<TodosOverviewBloc>()
+                                .add(TodosOverviewTodoDeleted(todo));
+                          },
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(EditTodoPage.route(initialTodo: todo));
+                          });
+                    },
+                  ),
+                ),
+                //add a rating bar system
+                RatingBar(
+   initialRating: 3,
+   direction: Axis.horizontal,
+   allowHalfRating: true,
+   itemCount: 5,
+   ratingWidget: RatingWidget(
+      full: Icon(Icons.star),
+      half: Icon(Icons.star_half),
+      empty: Icon(Icons.star_border),
+   ),
+   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+   onRatingUpdate: (rating) {
+     print(rating);
+   },
+),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
